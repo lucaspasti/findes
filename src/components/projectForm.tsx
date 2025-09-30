@@ -1,53 +1,55 @@
 "use client";
 
+import { insertProjeto } from "@/actions/projects";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { toast } from "sonner";
 
 type ProjetoFields = {
   // Informações Básicas
-  nomeProjeto: string;
-  modalTransporte: string;
-  statusProjeto:
+  nome_projeto: string;
+  modal_transporte: string;
+  status_projeto:
     | "Estudo"
     | "Planejamento"
     | "Execução"
     | "Concluído"
     | "Suspenso";
-  descricaoProjeto: string;
+  descricao_projeto: string;
 
   // Responsáveis e Gestão
-  orgaoResponsavel: string;
-  gerenteProjeto: string;
-  empresaExecutora: string;
+  orgao_responsavel: string;
+  gerente_projeto: string;
+  empresa_executora: string;
   consultoria: string;
 
   // Cronograma
-  dataInicio: string; // dd/mm/aaaa
-  dataTermino: string; // dd/mm/aaaa
-  duracaoMeses: string;
+  data_inicio: string; // dd/mm/aaaa
+  data_termino: string; // dd/mm/aaaa
+  duracao_meses: string;
 
   // Informações Financeiras
-  investimentoTotal: string; // R$
-  valorExecutado: string; // R$
-  fonteGovFederal: string; // %
-  fonteIniciativaPriv: string; // %
-  fonteGovEstadual: string; // %
+  investimento_total: string; // R$
+  valor_executado: string; // R$
+  fonte_gov_federal: string; // %
+  fonte_iniciativa_priv: string; // %
+  fonte_gov_estadual: string; // %
 
   // Localização
-  estadosEnvolvidos: string;
-  municipiosPrincipais: string;
-  latitudeCentral: string;
-  longitudeCentral: string;
+  estados_envolvidos: string;
+  municipios_principais: string;
+  latitude_central: string;
+  longitude_central: string;
 
   // Situação de Licenciamento
-  licencaAmbiental: "Não Requerida" | "Em Análise" | "Aprovada" | "Negada";
-  autorizacaoAgencia: "Não Requerida" | "Em Análise" | "Aprovada" | "Negada";
-  alvaraMunicipal: "Não Requerido" | "Em Análise" | "Aprovado" | "Negado";
-  outrasLicencas: string;
+  licenca_ambiental: "Não Requerida" | "Em Análise" | "Aprovada" | "Negada";
+  autorizacao_agencia: "Não Requerida" | "Em Análise" | "Aprovada" | "Negada";
+  alvara_municipal: "Não Requerido" | "Em Análise" | "Aprovada" | "Negada";
+  outras_licencas: string;
 
   // Impactos e Benefícios
-  empregosGerados: string;
-  aumentoCapacidade: string; // %
-  beneficiosSocioambientais: string;
+  empregos_gerados: string;
+  aumento_capacidade: string; // %
+  beneficios_socioambientais: string;
 };
 
 export default function FormProjeto({
@@ -57,52 +59,52 @@ export default function FormProjeto({
 }) {
   const [formData, setFormData] = useState<ProjetoFields>({
     // Básicas
-    nomeProjeto: prevData?.nomeProjeto || "",
-    modalTransporte: prevData?.modalTransporte || "",
-    statusProjeto:
-      (prevData?.statusProjeto as ProjetoFields["statusProjeto"]) || "Estudo",
-    descricaoProjeto: prevData?.descricaoProjeto || "",
+    nome_projeto: prevData?.nome_projeto || "",
+    modal_transporte: prevData?.modal_transporte || "",
+    status_projeto:
+      (prevData?.status_projeto as ProjetoFields["status_projeto"]) || "Estudo",
+    descricao_projeto: prevData?.descricao_projeto || "",
 
     // Responsáveis
-    orgaoResponsavel: prevData?.orgaoResponsavel || "",
-    gerenteProjeto: prevData?.gerenteProjeto || "",
-    empresaExecutora: prevData?.empresaExecutora || "",
+    orgao_responsavel: prevData?.orgao_responsavel || "",
+    gerente_projeto: prevData?.gerente_projeto || "",
+    empresa_executora: prevData?.empresa_executora || "",
     consultoria: prevData?.consultoria || "",
 
     // Cronograma
-    dataInicio: prevData?.dataInicio || "",
-    dataTermino: prevData?.dataTermino || "",
-    duracaoMeses: prevData?.duracaoMeses || "",
+    data_inicio: prevData?.data_inicio || "",
+    data_termino: prevData?.data_termino || "",
+    duracao_meses: prevData?.duracao_meses || "",
 
     // Financeiras
-    investimentoTotal: prevData?.investimentoTotal || "",
-    valorExecutado: prevData?.valorExecutado || "",
-    fonteGovFederal: prevData?.fonteGovFederal || "",
-    fonteIniciativaPriv: prevData?.fonteIniciativaPriv || "",
-    fonteGovEstadual: prevData?.fonteGovEstadual || "",
+    investimento_total: prevData?.investimento_total || "",
+    valor_executado: prevData?.valor_executado || "",
+    fonte_gov_federal: prevData?.fonte_gov_federal || "",
+    fonte_iniciativa_priv: prevData?.fonte_iniciativa_priv || "",
+    fonte_gov_estadual: prevData?.fonte_gov_estadual || "",
 
     // Localização
-    estadosEnvolvidos: prevData?.estadosEnvolvidos || "",
-    municipiosPrincipais: prevData?.municipiosPrincipais || "",
-    latitudeCentral: prevData?.latitudeCentral || "",
-    longitudeCentral: prevData?.longitudeCentral || "",
+    estados_envolvidos: prevData?.estados_envolvidos || "",
+    municipios_principais: prevData?.municipios_principais || "",
+    latitude_central: prevData?.latitude_central || "",
+    longitude_central: prevData?.longitude_central || "",
 
     // Licenciamento
-    licencaAmbiental:
-      (prevData?.licencaAmbiental as ProjetoFields["licencaAmbiental"]) ||
+    licenca_ambiental:
+      (prevData?.licenca_ambiental as ProjetoFields["licenca_ambiental"]) ||
       "Não Requerida",
-    autorizacaoAgencia:
-      (prevData?.autorizacaoAgencia as ProjetoFields["autorizacaoAgencia"]) ||
+    autorizacao_agencia:
+      (prevData?.autorizacao_agencia as ProjetoFields["autorizacao_agencia"]) ||
       "Não Requerida",
-    alvaraMunicipal:
-      (prevData?.alvaraMunicipal as ProjetoFields["alvaraMunicipal"]) ||
+    alvara_municipal:
+      (prevData?.alvara_municipal as ProjetoFields["alvara_municipal"]) ||
       "Não Requerido",
-    outrasLicencas: prevData?.outrasLicencas || "",
+    outras_licencas: prevData?.outras_licencas || "",
 
     // Impactos
-    empregosGerados: prevData?.empregosGerados || "",
-    aumentoCapacidade: prevData?.aumentoCapacidade || "",
-    beneficiosSocioambientais: prevData?.beneficiosSocioambientais || "",
+    empregos_gerados: prevData?.empregos_gerados || "",
+    aumento_capacidade: prevData?.aumento_capacidade || "",
+    beneficios_socioambientais: prevData?.beneficios_socioambientais || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,42 +116,58 @@ export default function FormProjeto({
     setFormData((p) => ({ ...p, [name]: value }));
   }
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
-    console.log("Projeto enviado:", formData);
-    setTimeout(() => setIsSubmitting(false), 600);
+
+    try {
+      const result = await insertProjeto(formData);
+
+      if (result.ok) {
+        console.log("Projeto inserido com ID:", result.id);
+        handleClear();
+        toast("Projeto inserido com sucesso!");
+      } else {
+        console.error("Erro:", result.error, result.issues);
+        alert(result.error ?? "Falha ao salvar o projeto");
+      }
+    } catch (err) {
+      console.error("Erro inesperado:", err);
+      alert("Erro inesperado ao salvar o projeto.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function handleClear() {
     setFormData({
-      nomeProjeto: "",
-      modalTransporte: "",
-      statusProjeto: "Estudo",
-      descricaoProjeto: "",
-      orgaoResponsavel: "",
-      gerenteProjeto: "",
-      empresaExecutora: "",
+      nome_projeto: "",
+      modal_transporte: "",
+      status_projeto: "Estudo",
+      descricao_projeto: "",
+      orgao_responsavel: "",
+      gerente_projeto: "",
+      empresa_executora: "",
       consultoria: "",
-      dataInicio: "",
-      dataTermino: "",
-      duracaoMeses: "",
-      investimentoTotal: "",
-      valorExecutado: "",
-      fonteGovFederal: "",
-      fonteIniciativaPriv: "",
-      fonteGovEstadual: "",
-      estadosEnvolvidos: "",
-      municipiosPrincipais: "",
-      latitudeCentral: "",
-      longitudeCentral: "",
-      licencaAmbiental: "Não Requerida",
-      autorizacaoAgencia: "Não Requerida",
-      alvaraMunicipal: "Não Requerido",
-      outrasLicencas: "",
-      empregosGerados: "",
-      aumentoCapacidade: "",
-      beneficiosSocioambientais: "",
+      data_inicio: "",
+      data_termino: "",
+      duracao_meses: "",
+      investimento_total: "",
+      valor_executado: "",
+      fonte_gov_federal: "",
+      fonte_iniciativa_priv: "",
+      fonte_gov_estadual: "",
+      estados_envolvidos: "",
+      municipios_principais: "",
+      latitude_central: "",
+      longitude_central: "",
+      licenca_ambiental: "Não Requerida",
+      autorizacao_agencia: "Não Requerida",
+      alvara_municipal: "Não Requerido",
+      outras_licencas: "",
+      empregos_gerados: "",
+      aumento_capacidade: "",
+      beneficios_socioambientais: "",
     });
   }
 
@@ -194,11 +212,11 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="nomeProjeto"
-                  name="nomeProjeto"
+                  name="nome_projeto"
                   type="text"
                   placeholder="Ex: Expansão Porto Santos"
                   required
-                  value={formData.nomeProjeto}
+                  value={formData.nome_projeto}
                   onChange={handleChange}
                   className="w-full rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -214,8 +232,8 @@ export default function FormProjeto({
                   </label>
                   <select
                     id="modalTransporte"
-                    name="modalTransporte"
-                    value={formData.modalTransporte}
+                    name="modal_transporte"
+                    value={formData.modal_transporte}
                     onChange={handleChange}
                     className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   >
@@ -239,14 +257,14 @@ export default function FormProjeto({
                   </label>
                   <select
                     id="statusProjeto"
-                    name="statusProjeto"
-                    value={formData.statusProjeto}
+                    name="status_projeto"
+                    value={formData.status_projeto}
                     onChange={handleChange}
                     className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   >
                     <option value="Estudo">Estudo</option>
                     <option value="Planejamento">Planejamento</option>
-                    <option value="Execução">Em Execução</option>
+                    <option value="Execução">Execução</option>
                     <option value="Concluído">Concluído</option>
                     <option value="Suspenso">Suspenso</option>
                   </select>
@@ -262,10 +280,10 @@ export default function FormProjeto({
                 </label>
                 <textarea
                   id="descricaoProjeto"
-                  name="descricaoProjeto"
+                  name="descricao_projeto"
                   rows={4}
                   placeholder="Descreva os objetivos e escopo do projeto"
-                  value={formData.descricaoProjeto}
+                  value={formData.descricao_projeto}
                   onChange={handleChange}
                   className="w-full resize-y rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -292,10 +310,10 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="orgaoResponsavel"
-                  name="orgaoResponsavel"
+                  name="orgao_responsavel"
                   type="text"
                   placeholder="Ex: DNIT, ANTT, Santos Port Authority"
-                  value={formData.orgaoResponsavel}
+                  value={formData.orgao_responsavel}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -310,10 +328,10 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="gerenteProjeto"
-                  name="gerenteProjeto"
+                  name="gerente_projeto"
                   type="text"
                   placeholder="Nome do gerente responsável"
-                  value={formData.gerenteProjeto}
+                  value={formData.gerente_projeto}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -328,10 +346,10 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="empresaExecutora"
-                  name="empresaExecutora"
+                  name="empresa_executora"
                   type="text"
                   placeholder="Empresa responsável pela execução"
-                  value={formData.empresaExecutora}
+                  value={formData.empresa_executora}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -376,12 +394,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="dataInicio"
-                  name="dataInicio"
+                  name="data_inicio"
                   type="text"
                   placeholder="dd/mm/aaaa"
                   inputMode="numeric"
-                  pattern="\d{2}/\d{2}/\d{4}"
-                  value={formData.dataInicio}
+                  pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}"
+                  value={formData.data_inicio}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -396,12 +414,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="dataTermino"
-                  name="dataTermino"
+                  name="data_termino"
                   type="text"
                   placeholder="dd/mm/aaaa"
                   inputMode="numeric"
-                  pattern="\d{2}/\d{2}/\d{4}"
-                  value={formData.dataTermino}
+                  pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}"
+                  value={formData.data_termino}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -416,12 +434,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="duracaoMeses"
-                  name="duracaoMeses"
+                  name="duracao_meses"
                   type="text"
                   placeholder="Ex: 24"
                   inputMode="numeric"
-                  pattern="\d*"
-                  value={formData.duracaoMeses}
+                  pattern="[0-9]*"
+                  value={formData.duracao_meses}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -448,11 +466,11 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="investimentoTotal"
-                  name="investimentoTotal"
+                  name="investimento_total"
                   type="text"
                   inputMode="decimal"
                   placeholder="Ex: 150000000"
-                  value={formData.investimentoTotal}
+                  value={formData.investimento_total}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -467,11 +485,11 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="valorExecutado"
-                  name="valorExecutado"
+                  name="valor_executado"
                   type="text"
                   inputMode="decimal"
                   placeholder="Ex: 52500000"
-                  value={formData.valorExecutado}
+                  value={formData.valor_executado}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -488,12 +506,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="fonteGovFederal"
-                  name="fonteGovFederal"
+                  name="fonte_gov_federal"
                   type="text"
                   inputMode="numeric"
                   placeholder="Ex: 60"
-                  pattern="\d*"
-                  value={formData.fonteGovFederal}
+                  pattern="[0-9]*"
+                  value={formData.fonte_gov_federal}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -508,12 +526,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="fonteIniciativaPriv"
-                  name="fonteIniciativaPriv"
+                  name="fonte_iniciativa_priv"
                   type="text"
                   inputMode="numeric"
                   placeholder="Ex: 30"
-                  pattern="\d*"
-                  value={formData.fonteIniciativaPriv}
+                  pattern="[0-9]*"
+                  value={formData.fonte_iniciativa_priv}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -528,12 +546,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="fonteGovEstadual"
-                  name="fonteGovEstadual"
+                  name="fonte_gov_estadual"
                   type="text"
                   inputMode="numeric"
                   placeholder="Ex: 10"
-                  pattern="\d*"
-                  value={formData.fonteGovEstadual}
+                  pattern="[0-9]*"
+                  value={formData.fonte_gov_estadual}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -560,10 +578,10 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="estadosEnvolvidos"
-                  name="estadosEnvolvidos"
+                  name="estados_envolvidos"
                   type="text"
                   placeholder="Ex: SP, RJ, MG"
-                  value={formData.estadosEnvolvidos}
+                  value={formData.estados_envolvidos}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -578,10 +596,10 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="municipiosPrincipais"
-                  name="municipiosPrincipais"
+                  name="municipios_principais"
                   type="text"
                   placeholder="Ex: Santos, São Paulo, Campinas"
-                  value={formData.municipiosPrincipais}
+                  value={formData.municipios_principais}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -597,11 +615,11 @@ export default function FormProjeto({
                   </label>
                   <input
                     id="latitudeCentral"
-                    name="latitudeCentral"
+                    name="latitude_central"
                     type="text"
                     inputMode="decimal"
                     placeholder="Ex: -23.9618"
-                    value={formData.latitudeCentral}
+                    value={formData.latitude_central}
                     onChange={handleChange}
                     className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -616,11 +634,11 @@ export default function FormProjeto({
                   </label>
                   <input
                     id="longitudeCentral"
-                    name="longitudeCentral"
+                    name="longitude_central"
                     type="text"
                     inputMode="decimal"
                     placeholder="Ex: -46.3332"
-                    value={formData.longitudeCentral}
+                    value={formData.longitude_central}
                     onChange={handleChange}
                     className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -648,8 +666,8 @@ export default function FormProjeto({
                 </label>
                 <select
                   id="licencaAmbiental"
-                  name="licencaAmbiental"
-                  value={formData.licencaAmbiental}
+                  name="licenca_ambiental"
+                  value={formData.licenca_ambiental}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
@@ -669,8 +687,8 @@ export default function FormProjeto({
                 </label>
                 <select
                   id="autorizacaoAgencia"
-                  name="autorizacaoAgencia"
-                  value={formData.autorizacaoAgencia}
+                  name="autorizacao_agencia"
+                  value={formData.autorizacao_agencia}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
@@ -690,15 +708,15 @@ export default function FormProjeto({
                 </label>
                 <select
                   id="alvaraMunicipal"
-                  name="alvaraMunicipal"
-                  value={formData.alvaraMunicipal}
+                  name="alvara_municipal"
+                  value={formData.alvara_municipal}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
                   <option value="Não Requerido">Não Requerido</option>
                   <option value="Em Análise">Em Análise</option>
-                  <option value="Aprovado">Aprovado</option>
-                  <option value="Negado">Negado</option>
+                  <option value="Aprovada">Aprovada</option>
+                  <option value="Negada">Negada</option>
                 </select>
               </div>
 
@@ -711,10 +729,10 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="outrasLicencas"
-                  name="outrasLicencas"
+                  name="outras_licencas"
                   type="text"
                   placeholder="Especifique outras licenças necessárias"
-                  value={formData.outrasLicencas}
+                  value={formData.outras_licencas}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -741,12 +759,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="empregosGerados"
-                  name="empregosGerados"
+                  name="empregos_gerados"
                   type="text"
                   inputMode="numeric"
-                  pattern="\d*"
+                  pattern="[0-9]*"
                   placeholder="Ex: 2500"
-                  value={formData.empregosGerados}
+                  value={formData.empregos_gerados}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -761,12 +779,12 @@ export default function FormProjeto({
                 </label>
                 <input
                   id="aumentoCapacidade"
-                  name="aumentoCapacidade"
+                  name="aumento_capacidade"
                   type="text"
                   inputMode="numeric"
-                  pattern="\d*"
+                  pattern="[0-9]*"
                   placeholder="Ex: 35"
-                  value={formData.aumentoCapacidade}
+                  value={formData.aumento_capacidade}
                   onChange={handleChange}
                   className="rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
@@ -782,10 +800,10 @@ export default function FormProjeto({
               </label>
               <textarea
                 id="beneficiosSocioambientais"
-                name="beneficiosSocioambientais"
+                name="beneficios_socioambientais"
                 rows={4}
                 placeholder="Descreva os principais benefícios sociais e ambientais esperados"
-                value={formData.beneficiosSocioambientais}
+                value={formData.beneficios_socioambientais}
                 onChange={handleChange}
                 className="w-full resize-y rounded-lg border border-slate-300 p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />

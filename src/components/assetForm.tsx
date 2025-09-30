@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { toast } from "sonner";
 
 type FormFields = {
+  id?: string | string[];
   tipo_modal: string;
   nome_ativo: string;
   estado: string;
@@ -24,11 +26,12 @@ export default function FormAtivo({
   prevData?: Partial<FormFields>;
 }) {
   const [formData, setFormData] = useState<FormFields>({
+    id: prevData?.id,
     tipo_modal: prevData?.tipo_modal || "",
     nome_ativo: prevData?.nome_ativo || "",
     estado: prevData?.estado || "",
     municipio: prevData?.municipio || "",
-    status: "Ativo",
+    status: (prevData?.status as FormFields["status"]) || "Ativo",
     latitude: prevData?.latitude || "",
     longitude: prevData?.longitude || "",
     endereco: prevData?.endereco || "",
@@ -37,8 +40,16 @@ export default function FormAtivo({
     observacoes: prevData?.observacoes || "",
     capacidade_extensao: prevData?.capacidade_extensao || "",
   });
-
+  console.log("prevData", prevData?.tipo_modal);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Pega o id da rota e salva no estado corretamente
+  const params = useParams<{ id?: string }>();
+  useEffect(() => {
+    if (params?.id) {
+      setFormData((p) => ({ ...p, id: params.id }));
+    }
+  }, [params?.id]);
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -61,13 +72,15 @@ export default function FormAtivo({
       if (!response.ok) {
         throw new Error("Erro ao cadastrar ativo");
       }
-
-      // Opcional: limpar o formulário ou mostrar mensagem de sucesso
-      toast("Ativo cadastrado com sucesso!");
+      if (!params?.id) {
+        toast("Ativo cadastrado com sucesso!");
+      } else {
+        toast("Ativo atualizado com sucesso!");
+      }
       handleClear();
     } catch (error) {
-      // Trate o erro conforme necessário
       console.error(error);
+      toast.error("Falha ao cadastrar o ativo.");
     } finally {
       setIsSubmitting(false);
     }
@@ -96,8 +109,20 @@ export default function FormAtivo({
       className="mx-auto p-6 sm:p-8"
       aria-labelledby="form-title"
     >
-      {/* Cabeçalho */}
+      {/* Campo oculto para id */}
+      <input
+        type="hidden"
+        name="id"
+        value={
+          Array.isArray(formData?.id)
+            ? formData.id[0] ?? ""
+            : formData?.id ?? ""
+        }
+        readOnly
+      />
+
       <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 shadow-sm">
+        {/* Cabeçalho */}
         <div className="border-b border-slate-200 bg-slate-50/60 p-5 sm:p-6 rounded-t-2xl">
           <h2
             id="form-title"
@@ -130,7 +155,7 @@ export default function FormAtivo({
               </label>
               <select
                 id="tipoModal"
-                name="tipoModal"
+                name="tipo_modal"
                 value={formData.tipo_modal}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-800 placeholder-slate-400 outline-none ring-0 transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -334,7 +359,7 @@ export default function FormAtivo({
                   className="rounded-lg border border-slate-300 bg-white p-2.5 text-slate-800 placeholder-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
-              {/* Novo campo Capacidade/Extensão */}
+
               <div className="grid gap-2 sm:max-w-xs">
                 <label
                   className="text-sm font-medium text-slate-700"
@@ -410,7 +435,7 @@ export default function FormAtivo({
               disabled={isSubmitting}
               className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSubmitting ? "Cadastrando..." : "Cadastrar Ativo"}
+              {!params?.id ? "Cadastrar Ativo" : "Atualizar Ativo"}
             </button>
           </div>
         </div>

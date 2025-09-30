@@ -8,9 +8,9 @@ import { Button } from "./ui/button";
 export type ProjetoRow = {
   id: number | string;
   projeto: string;
-  modal: string;
-  status:
-    | "Em Andamento"
+  modal_transporte: string;
+  status_projeto:
+    | "Execução"
     | "Planejamento"
     | "Licitação"
     | "Estudo"
@@ -26,11 +26,11 @@ export default function ProjetosTableClient({ data }: { data: ProjetoRow[] }) {
   const [filtroStatus, setFiltroStatus] = useState<string>("");
 
   const modais = useMemo(
-    () => Array.from(new Set(data.map((d) => d.modal))).sort(),
+    () => Array.from(new Set(data.map((d) => d.modal_transporte))).sort(),
     [data]
   );
   const statusList = useMemo(
-    () => Array.from(new Set(data.map((d) => d.status))).sort(),
+    () => Array.from(new Set(data.map((d) => d.status_projeto))).sort(),
     [data]
   );
 
@@ -38,29 +38,29 @@ export default function ProjetosTableClient({ data }: { data: ProjetoRow[] }) {
     const t = busca.trim().toLowerCase();
     return data.filter((d) => {
       const byText = !t || d.projeto.toLowerCase().includes(t);
-      const byModal = !filtroModal || d.modal === filtroModal;
-      const byStatus = !filtroStatus || d.status === filtroStatus;
+      const byModal = !filtroModal || d.modal_transporte === filtroModal;
+      const byStatus = !filtroStatus || d.status_projeto === filtroStatus;
       return byText && byModal && byStatus;
     });
   }, [data, busca, filtroModal, filtroStatus]);
 
   const columns: Column<ProjetoRow>[] = [
     {
-      key: "projeto",
+      key: "nome_projeto",
       header: "Projeto",
       minWidth: "20rem",
       className: "font-medium",
     },
-    { key: "modal", header: "Modal" },
+    { key: "modal_transporte", header: "Modal" },
     {
-      key: "status",
+      key: "status_projeto",
       header: "Status",
-      render: (r) => <StatusBadge status={r.status} />,
+      render: (r) => <StatusBadge status={r.status_projeto} />,
       minWidth: "10rem",
     },
-    { key: "responsavel", header: "Responsável", minWidth: "14rem" },
-    { key: "investimento", header: "Investimento" },
-    { key: "prazo", header: "Prazo" },
+    { key: "gerente_projeto", header: "Responsável", minWidth: "14rem" },
+    { key: "investimento_total", header: "Investimento" },
+    { key: "duracao_meses", header: "Prazo (meses)" },
   ];
 
   function onBusca(e: ChangeEvent<HTMLInputElement>) {
@@ -107,8 +107,8 @@ export default function ProjetosTableClient({ data }: { data: ProjetoRow[] }) {
           className="rounded-lg border border-slate-300 bg-white p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:w-56"
         >
           <option value="">Todos os Modais</option>
-          {modais.map((m) => (
-            <option key={m} value={m}>
+          {modais.map((m, idx) => (
+            <option key={`${m}-${idx}`} value={m}>
               {m}
             </option>
           ))}
@@ -120,8 +120,8 @@ export default function ProjetosTableClient({ data }: { data: ProjetoRow[] }) {
           className="rounded-lg border border-slate-300 bg-white p-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:w-56"
         >
           <option value="">Todos os Status</option>
-          {statusList.map((s) => (
-            <option key={s} value={s}>
+          {statusList.map((s, idx) => (
+            <option key={`${s}-${idx}`} value={s}>
               {s}
             </option>
           ))}
@@ -137,9 +137,11 @@ export default function ProjetosTableClient({ data }: { data: ProjetoRow[] }) {
         actionsHeader="Ações"
         renderActions={() => (
           <div className="flex justify-end gap-2">
-            <button className="rounded-md bg-blue-600 px-2.5 py-1 text-xs text-white hover:bg-blue-700 cursor-pointer">
-              Editar
-            </button>
+            <Link href={`/projetos/editar/${filtrados[0]?.id}`}>
+              <button className="rounded-md bg-blue-600 px-2.5 py-1 text-xs text-white hover:bg-blue-700 cursor-pointer">
+                Editar
+              </button>
+            </Link>
             <button className="rounded-md border border-slate-300 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer">
               Ver Detalhes
             </button>
@@ -153,15 +155,10 @@ export default function ProjetosTableClient({ data }: { data: ProjetoRow[] }) {
 function StatusBadge({
   status,
 }: {
-  status:
-    | "Em Andamento"
-    | "Planejamento"
-    | "Licitação"
-    | "Estudo"
-    | "Concluído";
+  status: "Execução" | "Planejamento" | "Licitação" | "Estudo" | "Concluído";
 }) {
   const map: Record<string, string> = {
-    "Em Andamento": "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
+    Execução: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
     Planejamento: "bg-amber-50 text-amber-800 ring-1 ring-amber-200",
     Licitação: "bg-fuchsia-50 text-fuchsia-700 ring-1 ring-fuchsia-200",
     Estudo: "bg-slate-100 text-slate-700 ring-1 ring-slate-200",

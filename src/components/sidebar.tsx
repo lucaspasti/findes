@@ -71,10 +71,22 @@ export function Sidebar() {
 function Aside({ pathname }: { pathname: string }) {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-14 items-center gap-2 px-4">
+      <div className="flex h-16 items-center gap-3 px-6 bg-blue-600 shadow-md">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="Logo" width={32} height={32} />{" "}
-        <span className="font-semibold text-gray-700">- FINDES</span>
+        <img
+          src="/logo_22-11.png"
+          alt="Logo"
+          className="h-10 w-auto object-contain"
+        />
+
+        <span className="text-sm font-medium text-white/80">by</span>
+
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.svg"
+          alt="Logo"
+          className="h-8 w-8 rounded-md bg-white p-1 shadow-sm"
+        />
       </div>
       <Separator />
       <ScrollArea className="flex-1">
